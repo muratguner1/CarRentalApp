@@ -27,12 +27,16 @@ namespace CarRentalApp.Infrastructure.Repositories
 
         public async Task<IEnumerable<User>> GetAllAsync()
         {
-            return await _context.Users.ToListAsync();
+            return await _context.Users
+                .Include(u => u.Rentals)
+                .ToListAsync();
         }
 
         public async Task<User?> GetByIdAsync(int id)
         {
-            return await _context.Users.FindAsync(id);
+            return await _context.Users
+                .Include(u => u.Rentals)
+                .FirstOrDefaultAsync();
         }
 
         public async Task<bool> UpdateAsync(User user)
@@ -41,8 +45,8 @@ namespace CarRentalApp.Infrastructure.Repositories
             if (existing == null)
                 return false;
             existing.UserName = user.UserName;
-            existing.PasswordHash = user.PasswordHash;
             existing.Role = user.Role;
+            existing.Email = user.Email;
             await _context.SaveChangesAsync();
             return true;
         }

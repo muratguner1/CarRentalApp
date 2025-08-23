@@ -8,7 +8,6 @@ namespace CarRentalApp.Infrastructure.Contexts
         public CarRentalDbContext(DbContextOptions<CarRentalDbContext> options) : base(options) { }
 
         public DbSet<User> Users { get; set; }
-        public DbSet<Customer> Customers { get; set; }
         public DbSet<Car> Cars { get; set; }
         public DbSet<Rental> Rentals { get; set; }
 

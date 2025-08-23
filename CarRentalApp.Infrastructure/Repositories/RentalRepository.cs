@@ -25,6 +25,22 @@ namespace CarRentalApp.Infrastructure.Repositories
             await _context.SaveChangesAsync();
         }
 
+        public async Task<IEnumerable<Rental>> GetAllAsync()
+        {
+            return await _context.Rentals
+                .Include(r => r.Car)
+                .Include(r => r.Customer)
+                .ToListAsync();
+        }
+
+        public async Task<Rental?> GetByIdAsync(int id)
+        {
+            return await _context.Rentals
+                .Include(r => r.Car)
+                .Include(r => r.Customer)
+                .FirstOrDefaultAsync(r => r.RentalId == id);
+        }
+
         public async Task<bool> DeleteAsync(int id)
         {
             var rental = await _context.Rentals.FindAsync(id);
@@ -35,24 +51,11 @@ namespace CarRentalApp.Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<Rental>> GetAllAsync()
-        {
-            return await _context.Rentals.Include(r => r.Car).Include(r => r.Customer).ToListAsync();
-        }
-
-        public async Task<Rental?> GetByIdAsync(int id)
-        {
-            return await _context.Rentals.Include(r => r.Car).Include(r => r.Customer).FirstOrDefaultAsync(r => r.RentalId == id);
-        }
-
         public async Task<bool> UpdateAsync(Rental rental)
         {
             var existing = await _context.Rentals.FindAsync(rental.RentalId);
             if (existing == null)
                 return false;
-            existing.CarId = rental.CarId;
-            existing.CustomerId = rental.CustomerId;
-            existing.RentDate = rental.RentDate;
             existing.ReturnDate = rental.ReturnDate;
             existing.RentAmount = rental.RentAmount;
             await _context.SaveChangesAsync();

@@ -26,12 +26,16 @@ namespace CarRentalApp.Infrastructure.Repositories
 
         public async Task<IEnumerable<Car>> GetAllAsync()
         {
-            return await _context.Cars.Include(c => c.Rentals).ToListAsync();
+            return await _context.Cars
+                .Include(c => c.Rentals)
+                .ToListAsync();
         }
 
         public async Task<Car?> GetByIdAsync(int id)
         {
-            return await _context.Cars.Include(c => c.Rentals).FirstOrDefaultAsync(c => c.CarId == id);
+            return await _context.Cars
+                .Include(c => c.Rentals)
+                .FirstOrDefaultAsync(c => c.CarId == id);
         }
 
         public async Task<bool> UpdateAsync(Car car)
