@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using CarRentalApp.Application.Interfaces;
+using CarRentalApp.Application.Interfaces.IRepositories;
 using CarRentalApp.Domain.Entities;
 using CarRentalApp.Infrastructure.Contexts;
 using Microsoft.EntityFrameworkCore;

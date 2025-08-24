@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using CarRentalApp.Domain.Entities;
 
-namespace CarRentalApp.Application.Interfaces
+namespace CarRentalApp.Application.Interfaces.IRepositories
 {
     public interface ICarRepository
     {

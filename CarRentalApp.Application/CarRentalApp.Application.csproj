@@ -4,6 +4,12 @@
     <ProjectReference Include="..\CarRentalApp.Domain\CarRentalApp.Domain.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Interfaces\IServices\" />
+    <Folder Include="Interfaces\IRepository\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+
   <PropertyGroup>
     <TargetFramework>net9.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
