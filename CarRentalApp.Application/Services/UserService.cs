@@ -24,12 +24,22 @@ namespace CarRentalApp.Application.Services
             _userRepository = userRepository;
             _logger = logger;
         }
-        public async Task<UserResponseDto> CreateAsync(UserCreateDto dto)
+        public async Task<UserResponseDto?> CreateAsync(UserCreateDto dto)
         {
-            _logger.LogInformation("Creating a new user with Username {Username}", dto.Username);
+            _logger.LogInformation("Creating a new user with Username {Username}", dto.UserName);
 
             var user = _mapper.Map<User>(dto);
-            await _userRepository.AddAsync(user);
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
+            var result = await _userRepository.AddAsync(user);
+
+            if (!result)
+            {
+                _logger.LogError("User with username {UserName} is already exits", dto.UserName);
+                return null;
+            }
+
+            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
 
             _logger.LogInformation("User created successfully with Id {UserId}", user.UserId);
             return _mapper.Map<UserResponseDto>(user);

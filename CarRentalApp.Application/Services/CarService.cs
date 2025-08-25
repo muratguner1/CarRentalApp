@@ -90,5 +90,11 @@ namespace CarRentalApp.Application.Services
             _logger.LogInformation("Car with Id {CarId} updated successfully", id);
             return result;
         }
+
+        public async Task<IEnumerable<CarResponseDto>> GetFilteredAsync(CarFilterDto filter)
+        {
+            var cars = await _carRepository.GetFilteredAsync(filter);
+            return _mapper.Map<IEnumerable<CarResponseDto>>(cars);
+        }
     }
 }

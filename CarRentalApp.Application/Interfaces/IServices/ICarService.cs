@@ -14,5 +14,6 @@ namespace CarRentalApp.Application.Interfaces.IServices
         Task<CarResponseDto> CreateAsync(CarCreateDto dto);
         Task<bool> UpdateAsync(int id, CarUpdateDto dto);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<CarResponseDto>> GetFilteredAsync(CarFilterDto filter);
     }
 }

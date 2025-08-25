@@ -26,7 +26,7 @@ namespace CarRentalApp.Application.Services
         }
         public async Task<RentalResponseDto> CreateAsync(RentalCreateDto dto)
         {
-            _logger.LogInformation("Creating a new rental for CarId {CarId} and UserId {UserId}", dto.CarId, dto.UserId);
+            _logger.LogInformation("Creating a new rental for CarId {CarId} and UserId {UserId}", dto.CarId, dto.CustomerId);
 
             var rental = _mapper.Map<Rental>(dto);
             await _rentalRepository.AddAsync(rental);

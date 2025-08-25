@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using CarRentalApp.Application.DTOs.Car;
 using CarRentalApp.Domain.Entities;
 
 namespace CarRentalApp.Application.Interfaces.IRepositories
@@ -14,5 +15,6 @@ namespace CarRentalApp.Application.Interfaces.IRepositories
         Task AddAsync(Car car);
         Task<bool> UpdateAsync(Car car);
         Task<bool> DeleteAsync(int id);
+        Task<IEnumerable<Car>> GetFilteredAsync(CarFilterDto filter);
     }
 }

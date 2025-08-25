@@ -19,10 +19,14 @@ namespace CarRentalApp.Infrastructure.Repositories
             _context = context;
         }
 
-        public async Task AddAsync(User user)
+        public async Task<bool> AddAsync(User user)
         {
+            var exists = await _context.Users.AnyAsync(u => u.UserName == user.UserName); //kullanıcı adı kotrolü
+            if (exists)
+                return false;
             await _context.Users.AddAsync(user);
             await _context.SaveChangesAsync();
+            return true;
         }
 
         public async Task<IEnumerable<User>> GetAllAsync()
