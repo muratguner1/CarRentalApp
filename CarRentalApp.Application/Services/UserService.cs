@@ -39,8 +39,6 @@ namespace CarRentalApp.Application.Services
                 return null;
             }
 
-            user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
-
             _logger.LogInformation("User created successfully with Id {UserId}", user.UserId);
             return _mapper.Map<UserResponseDto>(user);
         }
