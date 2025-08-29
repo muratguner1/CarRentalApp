@@ -1,5 +1,6 @@
 ﻿using CarRentalApp.Application.DTOs.User;
 using CarRentalApp.Application.Interfaces.IServices;
+using CarRentalApp.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
@@ -23,8 +24,8 @@ namespace CarRentalApp.API.Controllers
             var user = await _userService.CreateAsync(dto);
             if (user is null)
                 return BadRequest("User already exists!");
-            return Ok(new { message = "Registration successful", user = user });
-        }
+            return Created($"/api/users/{user.UserId}",new { message = "Registration successful", user = user });
+        } 
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(UserLoginDto dto)
@@ -32,7 +33,7 @@ namespace CarRentalApp.API.Controllers
             var token = await _authService.LoginAsync(dto);
             if (token is null)
                 return Unauthorized("User name or password incorrect");
-            return Ok(token);
+            return Ok(new { message = "Login successful", token = token });
         }
     }
 }

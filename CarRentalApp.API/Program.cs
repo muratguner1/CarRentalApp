@@ -1,4 +1,6 @@
 using System.Text;
+using System.Threading.RateLimiting;
+using CarRentalApp.API.Requirements;
 using CarRentalApp.Application.Interfaces.IRepositories;
 using CarRentalApp.Application.Interfaces.IServices;
 using CarRentalApp.Application.Mapping;
@@ -7,6 +9,8 @@ using CarRentalApp.Infrastructure.Contexts;
 using CarRentalApp.Infrastructure.Repositories;
 using CarRentalApp.Infrastructure.Seeder;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 
@@ -51,10 +55,35 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddRateLimiter(options =>
+{
+    options.AddFixedWindowLimiter("fixed", _ =>
+    {
+        _.Window = TimeSpan.FromSeconds(10);
+        _.PermitLimit = 5;
+        _.QueueLimit = 0;
+        _.QueueProcessingOrder = QueueProcessingOrder.OldestFirst;
+    });
+});
+
+builder.Services.AddAuthorization(options =>
+{
+    options.AddPolicy("SameUserOrAdmin", policy =>
+        policy.Requirements.Add(new SameUserOrAdminRequirement()));
+});
+
+builder.Services.AddSingleton<IAuthorizationHandler, SameUserOrAdminHandler>();
 
 var app = builder.Build();
 
-app.MapControllers();
+app.UseRouting();
+
+app.UseAuthentication();
+app.UseAuthorization();
+
+app.UseRateLimiter();
+
+app.MapControllers().RequireRateLimiting("fixed");
 
 using (var scope = app.Services.CreateScope())
 {
