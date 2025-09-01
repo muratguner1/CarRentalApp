@@ -8,10 +8,10 @@ namespace CarRentalApp.Application.DTOs.Car
 {
     public class CarUpdateDto
     {
-        public string Brand { get; set; } = null!;
-        public string Model { get; set; } = null!;
-        public int Year { get; set; }
-        public decimal DailyPrice { get; set; }
-        public bool IsAvailable { get; set; }
+        public string? Brand { get; set; }
+        public string? Model { get; set; }
+        public int? Year { get; set; }
+        public decimal? DailyPrice { get; set; }
+        public bool? IsAvailable { get; set; }
     }
 }

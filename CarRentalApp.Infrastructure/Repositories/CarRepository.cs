@@ -39,18 +39,12 @@ namespace CarRentalApp.Infrastructure.Repositories
                 .FirstOrDefaultAsync(c => c.CarId == id);
         }
 
-        public async Task<bool> UpdateAsync(Car car)
+        public async Task<Car?> UpdateAsync(Car car)
         {
             var existing = await _context.Cars.FindAsync(car.CarId);
-            if (existing == null)
-                return false;
-            existing.Brand = car.Brand;
-            existing.Model = car.Model;
-            existing.Year = car.Year;
-            existing.DailyPrice = car.DailyPrice;
-            existing.IsAvailable = car.IsAvailable;
+            
             await _context.SaveChangesAsync();
-            return true;
+            return existing;
         }
 
         public async Task<bool> DeleteAsync(int id)
@@ -91,6 +85,14 @@ namespace CarRentalApp.Infrastructure.Repositories
 
             return await query.ToListAsync();
 
+        }
+        public async Task<bool> ReturnCarAsync(int carId)
+        {
+            var car = await _context.Cars.FindAsync(carId);
+            car!.IsAvailable = true;
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

@@ -2,13 +2,13 @@
 using CarRentalApp.Application.Interfaces.IServices;
 using CarRentalApp.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace CarRentalApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [Authorize(Roles = "Admin")]
     public class CarController : ControllerBase
     {
         private readonly ICarService _carService;
@@ -18,7 +18,6 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpPost("addcar")]
-        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Create(CarCreateDto dto)
         {
             var response = await _carService.CreateAsync(dto);
@@ -26,10 +25,16 @@ namespace CarRentalApp.API.Controllers
 
         }
 
-
+        [HttpPut("update/{id}")]
+        public async Task<IActionResult> Update(int id, CarUpdateDto dto)
+        {
+            var response = await _carService.UpdateAsync(id, dto);
+            if (response is null)
+                return NotFound("Car not found!");
+            return Ok(new { message = "Car updated.", response = response });
+        }
 
         [HttpDelete("delete/{id}")]
-        [Authorize(Roles ="Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _carService.DeleteAsync(id);
@@ -39,6 +44,7 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpGet("getcars")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetAll()
         {
             var cars = await _carService.GetAllAsync();
@@ -48,12 +54,22 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpGet("getcar/{id}")]
+        [Authorize(Roles = "Customer")]
         public async Task<IActionResult> GetById(int id)
         {
             var response = await _carService.GetByIdAsync(id);
             if (response is null)
                 return NotFound("Car not found!");
             return Ok(response);
+        }
+
+        [HttpPost("getfiltered")]
+        public async Task<IActionResult> GetFiltered(CarFilterDto filter)
+        {
+            var filtered = await _carService.GetFilteredAsync(filter);
+            if (filtered is null || !filtered.Any())
+                return NotFound("No car were found that match this filter!");
+            return Ok(filtered);
         }
     }
 }

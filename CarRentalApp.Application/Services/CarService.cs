@@ -47,6 +47,7 @@ namespace CarRentalApp.Application.Services
             else
                 _logger.LogInformation("Car with Id {CarId} not found", id);
 
+            _logger.LogInformation("Car removed with Id {CarId}", id);
             return result;
         }
 
@@ -73,7 +74,7 @@ namespace CarRentalApp.Application.Services
             return _mapper.Map<CarResponseDto>(car);
         }
 
-        public async Task<bool> UpdateAsync(int id, CarUpdateDto dto)
+        public async Task<CarResponseDto?> UpdateAsync(int id, CarUpdateDto dto)
         {
             _logger.LogInformation("Updating car with Id {CarId}", id);
 
@@ -81,14 +82,15 @@ namespace CarRentalApp.Application.Services
             if (car == null)
             {
                 _logger.LogWarning("Car with Id {CarId} not found for update", id);
-                return false;
+                return null;
             }
 
             _mapper.Map(dto, car);
-            bool result = await _carRepository.UpdateAsync(car);
+            var response = await _carRepository.UpdateAsync(car);
 
             _logger.LogInformation("Car with Id {CarId} updated successfully", id);
-            return result;
+
+            return _mapper.Map<CarResponseDto>(response);
         }
 
         public async Task<IEnumerable<CarResponseDto>> GetFilteredAsync(CarFilterDto filter)

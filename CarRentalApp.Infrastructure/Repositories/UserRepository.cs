@@ -21,7 +21,7 @@ namespace CarRentalApp.Infrastructure.Repositories
 
         public async Task<bool> AddAsync(User user)
         {
-            var exists = await _context.Users.AnyAsync(u => u.UserName == user.UserName); //kullanıcı adı kotrolü
+            var exists = await _context.Users.AnyAsync(u => u.UserName == user.UserName);
             if (exists)
                 return false;
             await _context.Users.AddAsync(user);
@@ -40,19 +40,15 @@ namespace CarRentalApp.Infrastructure.Repositories
         {
             return await _context.Users
                 .Include(u => u.Rentals)
-                .FirstOrDefaultAsync();
+                .FirstOrDefaultAsync(u => u.UserId == id);
         }
 
-        public async Task<bool> UpdateAsync(User user)
+        public async Task<User?> UpdateAsync(User user)
         {
             var existing = await _context.Users.FindAsync(user.UserId);
-            if (existing == null)
-                return false;
-            existing.UserName = user.UserName;
-            existing.Role = user.Role;
-            existing.Email = user.Email;
+
             await _context.SaveChangesAsync();
-            return true;
+            return existing;
         }
 
         public async Task<bool> DeleteAsync(int id)

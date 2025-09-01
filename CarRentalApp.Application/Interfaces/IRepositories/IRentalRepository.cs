@@ -14,6 +14,7 @@ namespace CarRentalApp.Application.Interfaces.IRepositories
         Task AddAsync(Rental rental);
         Task<bool> UpdateAsync(Rental rental);
         Task<bool> DeleteAsync(int id);
+        Task<bool> ReturnCarAsync(int id, decimal dailyAmount);
         
     }
 }

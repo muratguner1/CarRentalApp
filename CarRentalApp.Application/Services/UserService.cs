@@ -15,14 +15,19 @@ namespace CarRentalApp.Application.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
+        private readonly IRentalRepository _rentalRepository;
+        private readonly ICarRepository _carRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, IMapper mapper, ILogger<UserService> logger)
+        public UserService(IUserRepository userRepository, IMapper mapper, ILogger<UserService> logger,
+            IRentalRepository rentalRepository, ICarRepository carRepository)
         {
             _mapper = mapper;
             _userRepository = userRepository;
             _logger = logger;
+            _rentalRepository = rentalRepository;
+            _carRepository = carRepository;
         }
         public async Task<UserResponseDto?> CreateAsync(UserCreateDto dto)
         {
@@ -81,7 +86,7 @@ namespace CarRentalApp.Application.Services
 
         }
 
-        public async Task<bool> UpdateAsync(int id, UserUpdateDto dto)
+        public async Task<UserResponseDto?> UpdateAsync(int id, UserUpdateDto dto)
         {
             _logger.LogInformation("Updating user with Id {UserId}", id);
 
@@ -89,7 +94,7 @@ namespace CarRentalApp.Application.Services
             if (user == null)
             {
                 _logger.LogWarning("User with Id {UserId} not found for update", id);
-                return false;
+                return null;
             }
 
             _mapper.Map(dto, user);
@@ -100,11 +105,30 @@ namespace CarRentalApp.Application.Services
                 user.PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password);
             }
 
-            bool result = await _userRepository.UpdateAsync(user);
+            var result = await _userRepository.UpdateAsync(user);
             _logger.LogInformation("User with Id {UserId} updated successfully", id);
 
-            return result;
+            return _mapper.Map<UserResponseDto>(result);
 
+        }
+
+        public async Task<bool> ReturnCarAsync(int rentalId)
+        {
+            var rental = await _rentalRepository.GetByIdAsync(rentalId);
+            var car = await _carRepository.GetByIdAsync(rental!.CarId);
+
+            _logger.LogInformation("Car with CarId {CarId} delivering.", car!.CarId);
+
+            var rentalStatu = await _rentalRepository.ReturnCarAsync(rentalId, car!.DailyPrice);
+            if(!rentalStatu)
+                return false;
+
+            var carStatu = await _carRepository.ReturnCarAsync(car.CarId);
+            if(!carStatu)
+                return false;
+
+            _logger.LogInformation("Car with CarId {CarId} delivered.", car.CarId);
+            return true;
         }
     }
 }

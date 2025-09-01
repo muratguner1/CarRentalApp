@@ -20,12 +20,26 @@ namespace CarRentalApp.Application.Mapping
             CreateMap<Rental, RentalResponseDto>();
 
             CreateMap<CarCreateDto, Car>();
-            CreateMap<CarUpdateDto, Car>();
             CreateMap<UserCreateDto, User>();
-            CreateMap<UserUpdateDto, User>();
             CreateMap<RentalCreateDto, Rental>();
-            CreateMap<RentalUpdateDto, Rental>();
+            
 
+            CreateMap<UserUpdateDto, User>()
+                .ForAllMembers(options => options.Condition((src, dest, srcMember) =>
+                    srcMember != null && !(srcMember is string s && string.IsNullOrEmpty(s))));
+
+            CreateMap<CarUpdateDto, Car>()
+                .ForAllMembers(options => options.Condition((src, dest, srcMember) =>
+                    srcMember != null &&
+                    !(srcMember is string s && string.IsNullOrEmpty(s)) &&
+                    !(srcMember is int i && i == 0) &&
+                    !(srcMember is decimal d && d == 0)));
+
+            CreateMap<RentalUpdateDto, Rental>()
+                .ForAllMembers(options => options.Condition((src, dest, srcMember) =>
+                    srcMember != null && 
+                    !(srcMember is string s && string.IsNullOrEmpty(s)) &&
+                    !(srcMember is DateTime dt && dt == DateTime.MinValue)));
         }
     }
 }

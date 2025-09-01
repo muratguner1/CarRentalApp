@@ -51,6 +51,8 @@ namespace CarRentalApp.Application.Services
                 ]),
 
                 Expires = DateTime.UtcNow.AddMinutes(45),
+                Issuer = _configuration["Jwt:Issuer"],
+                Audience = _configuration["Jwt:Audience"],
                 SigningCredentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha256Signature)
             };
 

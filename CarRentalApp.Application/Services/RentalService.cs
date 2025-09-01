@@ -15,20 +15,33 @@ namespace CarRentalApp.Application.Services
     public class RentalService : IRentalService
     {
         private readonly IRentalRepository _rentalRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ICarRepository _carRepository;
         private readonly IMapper _mapper;
         private readonly ILogger<RentalService> _logger;
 
-        public RentalService(IRentalRepository rentalRepository, IMapper mapper, ILogger<RentalService> logger)
+        public RentalService(IRentalRepository rentalRepository, IMapper mapper,
+            ILogger<RentalService> logger, IUserRepository userRepository, ICarRepository carRepository)
         {
             _mapper = mapper;
             _rentalRepository = rentalRepository;
             _logger = logger;
+            _userRepository = userRepository;
+            _carRepository = carRepository;
         }
         public async Task<RentalResponseDto> CreateAsync(RentalCreateDto dto)
         {
             _logger.LogInformation("Creating a new rental for CarId {CarId} and UserId {UserId}", dto.CarId, dto.CustomerId);
 
             var rental = _mapper.Map<Rental>(dto);
+
+            var car = await _carRepository.GetByIdAsync(dto.CarId);
+            rental.Car = car!;
+            car!.IsAvailable = false;
+
+            var customer = await _userRepository.GetByIdAsync(dto.CustomerId);
+            rental.Customer = customer!;
+
             await _rentalRepository.AddAsync(rental);
 
             _logger.LogInformation("Rental created successfully with Id {RentalId}", rental.RentalId);

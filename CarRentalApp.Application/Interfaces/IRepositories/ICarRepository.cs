@@ -13,8 +13,9 @@ namespace CarRentalApp.Application.Interfaces.IRepositories
         Task<Car?> GetByIdAsync(int id);
         Task<IEnumerable<Car>> GetAllAsync();
         Task AddAsync(Car car);
-        Task<bool> UpdateAsync(Car car);
+        Task<Car?> UpdateAsync(Car car);
         Task<bool> DeleteAsync(int id);
         Task<IEnumerable<Car>> GetFilteredAsync(CarFilterDto filter);
+        Task<bool> ReturnCarAsync(int carId);
     }
 }

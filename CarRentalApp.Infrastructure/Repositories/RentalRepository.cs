@@ -61,5 +61,19 @@ namespace CarRentalApp.Infrastructure.Repositories
             await _context.SaveChangesAsync();
             return true;
         }
+
+        public async Task<bool> ReturnCarAsync(int id, decimal dailyAmount)
+        {
+            var rental = await _context.Rentals.FindAsync(id);
+            rental!.ReturnDate = DateTime.UtcNow;
+
+            int days = (rental.ReturnDate.Value.Date - rental.RentDate.Date).Days;
+            if(days < 1)
+                days = 1;
+            rental.RentAmount = dailyAmount * (days);
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
     }
 }
