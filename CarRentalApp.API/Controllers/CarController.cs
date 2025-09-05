@@ -8,7 +8,6 @@ namespace CarRentalApp.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
     public class CarController : ControllerBase
     {
         private readonly ICarService _carService;
@@ -18,6 +17,7 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpPost("addcar")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Create(CarCreateDto dto)
         {
             var response = await _carService.CreateAsync(dto);
@@ -26,6 +26,7 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpPut("update/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Update(int id, CarUpdateDto dto)
         {
             var response = await _carService.UpdateAsync(id, dto);
@@ -35,16 +36,17 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpDelete("delete/{id}")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> Delete(int id)
         {
             var result = await _carService.DeleteAsync(id);
             if(!result)
                 return NotFound("Car not found!");
-            return Ok("Car removed successfully.");
+            return Ok(new { message = "Car removed succesfully.", response = result });
         }
 
         [HttpGet("getcars")]
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<IActionResult> GetAll()
         {
             var cars = await _carService.GetAllAsync();
@@ -54,7 +56,7 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpGet("getcar/{id}")]
-        [Authorize(Roles = "Customer")]
+        [Authorize(Roles = "Customer,Admin")]
         public async Task<IActionResult> GetById(int id)
         {
             var response = await _carService.GetByIdAsync(id);
@@ -64,6 +66,7 @@ namespace CarRentalApp.API.Controllers
         }
 
         [HttpPost("getfiltered")]
+        [Authorize(Roles = "Admin")]
         public async Task<IActionResult> GetFiltered(CarFilterDto filter)
         {
             var filtered = await _carService.GetFilteredAsync(filter);

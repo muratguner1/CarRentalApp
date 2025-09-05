@@ -70,7 +70,7 @@ namespace CarRentalApp.API.Controllers
             var success = await _userService.DeleteAsync(id);
             if (!success)
                 return NotFound("User not found!");
-            return Ok("User removed successfully.");
+            return Ok(new { message = "User removed succesfully.", response = success });
         }
 
         [HttpPost("rentcar")]

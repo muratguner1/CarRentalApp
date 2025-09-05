@@ -95,6 +95,7 @@ namespace CarRentalApp.Application.Services
 
         public async Task<IEnumerable<CarResponseDto>> GetFilteredAsync(CarFilterDto filter)
         {
+            _logger.LogInformation("Getting filtered cars.");
             var cars = await _carRepository.GetFilteredAsync(filter);
             return _mapper.Map<IEnumerable<CarResponseDto>>(cars);
         }
