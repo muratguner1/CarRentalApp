@@ -20,7 +20,7 @@ The project implements **JWT-based Authentication & Authorization** to secure en
 
 - **Car Management**
   - Admins can **add, update, delete** cars
-  - Customers can **view available cars**
+  - Customers can **view cars**
   - Filtering cars by brand, model, year, availability, price
 
 - **Rental Management**
@@ -37,10 +37,14 @@ The project implements **JWT-based Authentication & Authorization** to secure en
 - **AutoMapper** (DTO ↔ Entity mapping)
 - **JWT Authentication**
 - **Dependency Injection**
-- **SQL Server** (default database, configurable)
+- **PostgreSQL** (default database, configurable)
+- **Rate Limiting** (e.g. user can send maximum 5 requests in 10 seconds)
+- **Async Programming**
+- **Postman** (for testing)
 
 ---
 ## Author
 
 - **Murat Güner**
+
 
